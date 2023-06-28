@@ -487,5 +487,36 @@ export default {
       "updateButtonName": "Edit",
       "deleteButtonName": "Delete"
     }
+  },
+  "form": {
+    "width": '1000px',
+    "labelWidth": '150px',
+    "items": [
+      {
+        "name": "Id",
+        "key": "id",
+        "type": "varchar",
+        "show": false,
+        "placeholder": "Please Input Id"
+      },
+      {
+        "name": "Institution",
+        "key": "institution",
+        "type": "varchar",
+        "show": true,
+        "placeholder": "Please Input Institution"
+      },
+      {
+        "name": "Term",
+        "key": "term",
+        "type": "varchar",
+        "show": true,
+        "placeholder": "Please Input Term"
+      },
+    ],
+    "button": {
+      "confimButtonName": "Comfirm",
+      "cancelButtonName": "Cancel"
+    }
   }
 }

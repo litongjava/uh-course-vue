@@ -165,31 +165,22 @@
     <span>{{ contentDialogContent }}</span>
   </el-dialog>
   <!-- 对话框(添加 / 修改) -->
-  <el-dialog v-dialogDrag :title="title" :visible.sync="open" width="500px" append-to-body>
-    <el-form ref="form" :model="form" :rules="rules" label-width="150px">
-      <el-form-item label="Institution" prop="institution">
-        <el-input v-model="form.institution" placeholder="请输入 Institution"/>
-      </el-form-item>
+  <el-dialog v-dialogDrag :title="title" :visible.sync="open" :width="config.form.width" append-to-body>
+    <el-form ref="form" :model="form" :rules="rules" :label-width="config.form.labelWidth">
 
-      <el-form-item label="Term" prop="term">
-        <el-input v-model="form.term" placeholder="请输入 Term"/>
-      </el-form-item>
+      <el-form-item v-for="(item, index) in config.query.items" :key="index" :label="item.name"
+                    :prop="item.key" v-if="item.show">
 
-      <el-form-item label="Subject Abbr" prop="subjectAbbr">
-        <el-input v-model="form.subjectAbbr" placeholder="请输入 Subject Abbr"/>
-      </el-form-item>
+        <el-input v-if="item.type === 'varchar'" v-model="queryParams[item.key]"
+                  :placeholder="item.placeholder"/>
 
-      <el-form-item label="Subject Name" prop="subjectName">
-        <el-input v-model="form.subjectName" placeholder="请输入 Subject Name"/>
-      </el-form-item>
-
-      <el-form-item label="Focus On" prop="focusOn">
-        <el-input v-model="form.focusOn" placeholder="请输入 Focus On"/>
+        <el-date-picker v-else-if="item.type === 'date'" v-model="queryParams[item.key]"
+                        style="width: 240px" value-format="yyyy-MM-dd HH:mm:ss"/>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">Confirm</el-button>
-      <el-button @click="cancel">Cancel</el-button>
+      <el-button type="primary" @click="submitForm">{{config.form.button.confimButtonName}}</el-button>
+      <el-button @click="cancel">{{config.form.button.cancelButtonName}}</el-button>
     </div>
   </el-dialog>
 </div>
@@ -279,7 +270,7 @@ export default {
     },
     toggleItem(items, key) {
       const item = items.find(item => item.key === key);
-      if(item) item.show = !item.show;
+      if (item) item.show = !item.show;
     },
     toggleColumn(key) {
       this.toggleItem(this.config.table.items, key);
@@ -318,7 +309,7 @@ export default {
     /** 修改按钮操作 */
     async handleUpdate(row) {
       this.reset();
-      const { data } = await getRecord(this.$request, TABLE_NAME, row.id);
+      const {data} = await getRecord(this.$request, TABLE_NAME, row.id);
       this.form = {
         ...data.data,
         tableName: TABLE_NAME,
@@ -337,7 +328,7 @@ export default {
     },
 
     async handleSubmit(promise, action) {
-      const { data } = await promise;
+      const {data} = await promise;
       if (data.data) {
         this.$modal.msgSuccess(`${action} Successfully`);
         this.open = false;
