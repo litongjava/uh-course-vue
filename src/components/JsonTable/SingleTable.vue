@@ -248,8 +248,8 @@ export default {
       //显示的搜索列
       visibleSearchItems: [],
       //内容对话框
-      contentDialogVisible: undefined,
-      contentDialogContent: undefined,
+      contentDialogVisible: false,
+      contentDialogContent: '',
     }
   },
   created() {
@@ -262,7 +262,10 @@ export default {
       this.config.query.items.forEach(item => {
         this.$set(this.queryParams, item.key, null);
       });
-      Object.assign(this.queryParams, this.config.query.operator);
+      this.queryParams = {
+        ...this.queryParams,
+        ...this.config.query.operator
+      };
     },
     /** 查询列表 */
     getList() {
@@ -274,19 +277,15 @@ export default {
         this.loading = false
       })
     },
+    toggleItem(items, key) {
+      const item = items.find(item => item.key === key);
+      if(item) item.show = !item.show;
+    },
     toggleColumn(key) {
-      for (let i = 0; i < this.config.table.items.length; i++) {
-        if (key === this.config.table.items[i].key) {
-          this.config.table.items[i].show = !this.config.table.items[i].show
-        }
-      }
+      this.toggleItem(this.config.table.items, key);
     },
     toggleQueryItem(key) {
-      for (let i = 0; i < this.config.query.items.length; i++) {
-        if (key === this.config.table.items[i].key) {
-          this.config.query.items[i].show = !this.config.query.items[i].show
-        }
-      }
+      this.toggleItem(this.config.query.items, key);
     },
     /** 取消按钮 */
     cancel() {
@@ -317,55 +316,56 @@ export default {
       this.title = 'Add ' + this.config.tableAlias
     },
     /** 修改按钮操作 */
-    handleUpdate(row) {
+    async handleUpdate(row) {
       this.reset();
-      const id = row.id;
-      getRecord(this.$request, TABLE_NAME, id).then(response => {
-        this.form = response.data.data;
-        this.form.tableName = TABLE_NAME; // 添加这行代码
-        this.open = true;
-        this.title = 'Edit ' + this.config.tableAlias
-      })
+      const { data } = await getRecord(this.$request, TABLE_NAME, row.id);
+      this.form = {
+        ...data.data,
+        tableName: TABLE_NAME,
+      };
+      this.open = true;
+      this.title = 'Edit ' + this.config.tableAlias
     },
     /** 验证并提交表单 */
     submitForm() {
       this.$refs['form'].validate(valid => {
-        if (!valid) {
-          return
-        }
-        // 修改的提交
-        if (this.form.id != null) {
-          this.handleSubmit(updateRecord(this.$request, this.form), 'Update')
-        } else {
-          // 添加的提交
-          this.handleSubmit(createRecord(this.$request, this.form), 'Add')
+        if (valid) {
+          const method = this.form.id ? updateRecord : createRecord;
+          this.handleSubmit(method(this.$request, this.form), this.form.id ? 'Update' : 'Add')
         }
       })
     },
 
-    // 代码优化: 提交请求的方法抽象
-    handleSubmit(promise, action) {
-      promise.then(response => {
-        if (response.data.data) {
-          this.$modal.msgSuccess(`${action} Successfully`);
-          this.open = false;
-          this.getList()
-        } else {
-          this.$modal.msgError(`${action} Failed`)
-        }
-      })
+    async handleSubmit(promise, action) {
+      const { data } = await promise;
+      if (data.data) {
+        this.$modal.msgSuccess(`${action} Successfully`);
+        this.open = false;
+        this.getList();
+      } else {
+        this.$modal.msgError(`${action} Failed`)
+      }
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const id = row.id;
-      this.$modal.confirm('Confirm whether to delete the data item whose ID is ' + id).then(() => {
-        return deleteRecord(this.$request, TABLE_NAME, id)
+      this.$confirm('Are you sure you want to delete this item?', 'Tip', {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
       }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess('Deleted Successfully')
-      }).catch((e) => {
-        console.log(e)
-      })
+        deleteRecord(this.$request, TABLE_NAME, row.id).then(() => {
+          this.getList();
+          this.$message({
+            type: 'success',
+            message: 'Delete successful!'
+          });
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Delete cancelled'
+        });
+      });
     },
     // 代码优化: 导出数据的方法抽象
     handleExport(isAll = false) {
