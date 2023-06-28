@@ -168,7 +168,7 @@
   <el-dialog v-dialogDrag :title="title" :visible.sync="open" :width="config.form.width" append-to-body>
     <el-form ref="form" :model="form" :rules="rules" :label-width="config.form.labelWidth">
 
-      <el-form-item v-for="(item, index) in config.query.items" :key="index" :label="item.name"
+      <el-form-item v-for="(item, index) in config.form.items" :key="index" :label="item.name"
                     :prop="item.key" v-if="item.show">
 
         <el-input v-if="item.type === 'varchar'" v-model="queryParams[item.key]"
