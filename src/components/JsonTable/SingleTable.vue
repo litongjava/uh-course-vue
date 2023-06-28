@@ -59,6 +59,41 @@
         </el-button>
       </el-col>
       <right-toolbar :show-search.sync="showSearch" @queryTable="getList"/>
+
+      <el-dropdown>
+          <span class="el-dropdown-link">
+            <el-tooltip effect="dark" content="Show/Hide Search Item" placement="top">
+              <el-button size="mini" icon="el-icon-menu"/>
+            </el-tooltip>
+          </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-checkbox-group v-model="visibleSearchItems">
+            <el-checkbox v-for="column in config.query.items" :key="column.key" :label="column.key"
+                         :checked="column.show"
+                         @change="toggleQueryItem(column.key)">
+              {{ column.name }}
+            </el-checkbox>
+          </el-checkbox-group>
+        </el-dropdown-menu>
+      </el-dropdown>
+
+      <el-dropdown>
+          <span class="el-dropdown-link">
+            <el-tooltip effect="dark" content="Show/Hide Columns" placement="top">
+              <el-button size="mini" icon="el-icon-circle-plus"/>
+            </el-tooltip>
+
+          </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-checkbox-group v-model="visibleColumns">
+            <el-checkbox v-for="column in config.table.items" :key="column.key" :label="column.key"
+                         :checked="column.show"
+                         @change="toggleColumn(column.key)">
+              {{ column.name }}
+            </el-checkbox>
+          </el-checkbox-group>
+        </el-dropdown-menu>
+      </el-dropdown>
     </el-row>
   </div>
 
@@ -85,10 +120,11 @@
       <span>{{ parseTime(scope.row[item.key]) }}</span>
       </template>
       <template v-else v-slot="scope">
-      <div  class="cell-content" @mouseover="showCopyIcon = true" @mouseleave="showCopyIcon = false">
+      <div class="cell-content" @mouseover="showCopyIcon = true" @mouseleave="showCopyIcon = false">
         <span>{{ scope.row[item.key] }}</span>
         <el-tooltip v-if="showCopyIcon" content="Copy">
-          <el-button class="copy-button" @click="copyToClipboard(scope.row[item.key])" icon="el-icon-document-copy" circle></el-button>
+          <el-button class="copy-button" @click="copyToClipboard(scope.row[item.key])"
+                     icon="el-icon-document-copy" circle></el-button>
         </el-tooltip>
       </div>
       </template>
@@ -206,10 +242,15 @@ export default {
         tableName: TABLE_NAME
       },
       // 表单校验
-      rules: {}
+      rules: {},
+      //显示的列
+      visibleColumns: [],
+      //显示的搜索列
+      visibleSearchItems: []
     }
   },
   created() {
+    window.a = this;
     this.initializeQueryParams();
     this.getList()
   },
@@ -229,6 +270,20 @@ export default {
         this.total = response.data.data.total;
         this.loading = false
       })
+    },
+    toggleColumn(key) {
+      for (let i = 0; i < this.config.table.items.length; i++) {
+        if (key === this.config.table.items[i].key) {
+          this.config.table.items[i].show = !this.config.table.items[i].show
+        }
+      }
+    },
+    toggleQueryItem(key) {
+      for (let i = 0; i < this.config.query.items.length; i++) {
+        if (key === this.config.table.items[i].key) {
+          this.config.query.items[i].show = !this.config.query.items[i].show
+        }
+      }
     },
     /** 取消按钮 */
     cancel() {
@@ -362,16 +417,20 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
   .el-table .cell .copy-button {
     position: absolute;
     visibility: hidden; /* Initially hide the button */
   }
+
   .el-table .cell:hover .copy-button {
     visibility: visible; /* Show the button when the cell is hovered */
   }
+
   .el-tooltip {
-    z-index: 2000;  /* 根据你的实际情况调整这个值 */
+    z-index: 2000; /* 根据你的实际情况调整这个值 */
   }
+
   .copy-button {
     position: absolute;
     right: 0;

@@ -1,20 +1,20 @@
 <template>
   <div class="top-right-btn" :style="style">
     <el-row>
-      <el-tooltip v-if="search" class="item" effect="dark" :content="showSearch ? '隐藏搜索' : '显示搜索'" placement="top">
-        <el-button size="mini" circle icon="el-icon-search" @click="toggleSearch()" />
+      <el-tooltip v-if="search" class="item" effect="dark" :content="showSearch ? 'Hide Search' : 'Show Search'" placement="top">
+        <el-button size="mini" icon="el-icon-search" @click="toggleSearch()" />
       </el-tooltip>
-      <el-tooltip class="item" effect="dark" content="刷新" placement="top">
-        <el-button size="mini" circle icon="el-icon-refresh" @click="refresh()" />
+      <el-tooltip class="item" effect="dark" content="refresh" placement="top">
+        <el-button size="mini" icon="el-icon-refresh" @click="refresh()" />
       </el-tooltip>
-      <el-tooltip v-if="columns" class="item" effect="dark" content="显隐列" placement="top">
-        <el-button size="mini" circle icon="el-icon-menu" @click="showColumn()" />
+      <el-tooltip v-if="columns" class="item" effect="dark" content="Hide Column" placement="top">
+        <el-button size="mini" icon="el-icon-menu" @click="showColumn()" />
       </el-tooltip>
     </el-row>
     <el-dialog :title="title" :visible.sync="open" append-to-body>
       <el-transfer
         v-model="value"
-        :titles="['显示', '隐藏']"
+        :titles="['Show', 'Hide']"
         :data="columns"
         @change="dataChange"
       />
@@ -46,7 +46,7 @@ export default {
       // 显隐数据
       value: [],
       // 弹出层标题
-      title: '显示/隐藏',
+      title: 'Show/Hide',
       // 是否显示弹出层
       open: false
     }
