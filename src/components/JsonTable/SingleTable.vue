@@ -186,8 +186,8 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">确 定</el-button>
-      <el-button @click="cancel">取 消</el-button>
+      <el-button type="primary" @click="submitForm">Confirm</el-button>
+      <el-button @click="cancel">Cancel</el-button>
     </div>
   </el-dialog>
 </div>
@@ -311,7 +311,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = '添加AI报警'
+      this.title = 'Add ' + this.config.tableAlias
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -321,7 +321,7 @@ export default {
         this.form = response.data.data;
         this.form.tableName = TABLE_NAME; // 添加这行代码
         this.open = true;
-        this.title = '修改AI报警'
+        this.title = 'Edit ' + this.config.tableAlias
       })
     },
     /** 提交按钮 */
@@ -335,11 +335,11 @@ export default {
         if (this.form.id != null) {
           updateRecord(this.$request, this.form).then(response => {
             if (response.data.data) {
-              this.$modal.msgSuccess('修改成功');
+              this.$modal.msgSuccess('Update Successfully');
               this.open = false;
               this.getList()
             } else {
-              this.$modal.msgError('修改失败');
+              this.$modal.msgError('Update Failed');
             }
           });
           return
@@ -347,11 +347,11 @@ export default {
         // 添加的提交
         createRecord(this.$request, this.form).then(response => {
           if (response.data.data) {
-            this.$modal.msgSuccess('新增成功');
+            this.$modal.msgSuccess('Add Successfully');
             this.open = false;
             this.getList()
           } else {
-            this.$modal.msgError('新增失败');
+            this.$modal.msgError('Add Failed');
           }
 
         })
@@ -360,11 +360,11 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const id = row.id;
-      this.$modal.confirm('是否确认删除ID为"' + id + '"的数据项?').then(() => {
+      this.$modal.confirm('Confirm whether to delete the data item whose ID is ' + id).then(() => {
         return deleteRecord(this.$request, TABLE_NAME, id)
       }).then(() => {
         this.getList();
-        this.$modal.msgSuccess('删除成功')
+        this.$modal.msgSuccess('Deleted Successfully')
       }).catch((e) => {
         console.log(e)
       })
@@ -375,7 +375,7 @@ export default {
       const params = {...this.queryParams};
       params.pageNo = undefined;
       params.pageSize = undefined;
-      this.$modal.confirm('是否确认导出数据项?').then(() => {
+      this.$modal.confirm('Confirm whether to export data items?').then(() => {
         this.exportLoading = true;
         return exportExcel(this.$request, params)
       }).then(response => {
@@ -388,7 +388,7 @@ export default {
     /** 导出按钮操作 */
     handleExportAll() {
       // 处理查询参数
-      this.$modal.confirm('是否确认导出所有数据项?').then(() => {
+      this.$modal.confirm('Confirm whether to export all data items?').then(() => {
         this.exportLoading = true;
         return exportTableExcel(this.$request, TABLE_NAME)
       }).then(response => {
@@ -401,10 +401,10 @@ export default {
     copyToClipboard(text) {
       navigator.clipboard.writeText(text).then(() => {
         // 复制成功
-        this.$modal.msgSuccess('Copy Success');
-      }).catch(() => {
+        this.$modal.msgSuccess('Copy Successfully');
+      }).catch((e) => {
         // 复制失败
-        this.$modal.msgError('Copy Failed');
+        this.$modal.msgError('Copy Failed:' + e);
       });
     }
   }
