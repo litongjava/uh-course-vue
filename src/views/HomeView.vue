@@ -1,5 +1,5 @@
 <template>
-<json-multi-table-view/>
+<json-multi-table-view :config="{lang:'zh-CN'}"/>
 </template>
 
 <script>

@@ -215,7 +215,7 @@ export default {
       total: 0,
       // 列表
       list: [],
-      // 弹出层标题
+      // 弹出层标题6
       title: '',
       // 是否显示弹出层
       open: false,
@@ -414,7 +414,7 @@ export default {
     position: absolute;
     visibility: hidden;
     top: 50%;
-    right: -30%; /* Change this line */
+    right: -10%; /* Change this line */
     transform: translateY(-50%);
   }
 
