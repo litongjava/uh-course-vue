@@ -98,7 +98,7 @@
   </div>
 
   <!-- 列表 -->
-  <el-table v-loading="loading" :data="list">
+  <el-table v-loading="loading" :data="list" @row-dblclick="showContentDialog">
     <el-table-column align="center" type="selection" width="50" v-if="config.table.selectionShow"/>
     <el-table-column label="No." prop="num" align="center" width="100" v-if="config.table.numberShow">
       <template slot-scope="row">
@@ -114,7 +114,6 @@
       :align="item.align"
       :height="item.height"
       v-if="item.show"
-      @dblclick="showContentDialog(item)"
       show-overflow-tooltip
     >
       <template v-slot="scope">
@@ -161,7 +160,7 @@
     @pagination="getList"
   />
 
-  <el-dialog :visible="contentDialogVisible" @close="contentDialogVisible = false">
+  <el-dialog :visible="contentDialogVisible" @close="contentDialogVisible = false" :title="contentDialogTitle">
     <span>{{ contentDialogContent }}</span>
   </el-dialog>
   <!-- 对话框(添加 / 修改) -->
@@ -241,6 +240,7 @@ export default {
       //内容对话框
       contentDialogVisible: false,
       contentDialogContent: '',
+      contentDialogTitle:'',
     }
   },
   created() {
@@ -385,21 +385,23 @@ export default {
     handleExportAll() {
       this.handleExport(true)
     },
+    copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        // 复制成功
+        this.$modal.msgSuccess('Copy Successfully');
+      }).catch((e) => {
+        // 复制失败
+        this.$modal.msgError('Copy Failed:' + e);
+      });
+    },
+    showContentDialog(row, column) {
+      this.contentDialogVisible = true;
+      this.contentDialogTitle=column.label;
+      this.contentDialogContent = row[column.property];
+      // console.log(row)--> 所在列的数据
+      // console.log(column) // 所在行的描述
+    },
   },
-  copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-      // 复制成功
-      this.$modal.msgSuccess('Copy Successfully');
-    }).catch((e) => {
-      // 复制失败
-      this.$modal.msgError('Copy Failed:' + e);
-    });
-  },
-  showContentDialog(item) {
-    this.contentDialogVisible = true;
-    this.contentDialogContent = this.list[item.key];
-  },
-
 }
 </script>
 <style scoped>
