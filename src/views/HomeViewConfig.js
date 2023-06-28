@@ -677,13 +677,11 @@ export default {
         "name": "Update Time",
         "key": "updateTime",
         "type": "date",
-        "show": false,
+        "show": true,
+        "placeholder": "Please Input Update Time",
         "prop": {
-          "type": "daterange",
-          "rangeSeparator": "-",
-          "startPlaceholder": "Start Date",
-          "endPlaceholder": "End Date",
-          "defaultTime": "['00:00:00', '23:59:59']"
+          "type": "datetime",
+          "valueFormat":"yyyy-MM-dd HH:mm:ss",
         }
       },
       {

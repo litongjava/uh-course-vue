@@ -171,11 +171,11 @@
       <el-form-item v-for="(item, index) in config.form.items" :key="index" :label="item.name"
                     :prop="item.key" v-if="item.show">
 
-        <el-input v-if="item.type === 'varchar'" v-model="queryParams[item.key]"
+        <el-input v-if="item.type === 'varchar'" v-model="form[item.key]"
                   :placeholder="item.placeholder"/>
 
-        <el-date-picker v-else-if="item.type === 'date'" v-model="queryParams[item.key]"
-                        style="width: 240px" value-format="yyyy-MM-dd HH:mm:ss"/>
+        <el-date-picker v-else-if="item.type === 'date'" v-model="form[item.key]"
+                        clearable :type="item.prop.type" :value-format="item.prop.valueFormat" :placeholder="item.placeholder"/>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -422,4 +422,3 @@ export default {
     visibility: visible;
   }
 </style>
-
