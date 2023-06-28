@@ -175,7 +175,8 @@
                   :placeholder="item.placeholder"/>
 
         <el-date-picker v-else-if="item.type === 'date'" v-model="form[item.key]"
-                        clearable :type="item.prop.type" :value-format="item.prop.valueFormat" :placeholder="item.placeholder"/>
+                        clearable :type="item.prop.type" :value-format="item.prop.valueFormat"
+                        :placeholder="item.placeholder"/>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -195,7 +196,6 @@ import {
   exportTableExcel, exportExcel
 } from './tableToJson'
 
-const TABLE_NAME = 'course'; // 将表名提取为一个常
 export default {
   name: 'JsonTable',
   props: {
@@ -224,13 +224,13 @@ export default {
       open: false,
       // 查询参数
       queryParams: {
-        tableName: TABLE_NAME,
+        tableName: config.tableName,
         pageNo: 1,
         pageSize: 10,
       },
       // 表单参数
       form: {
-        tableName: TABLE_NAME
+        tableName: config.tableName,
       },
       // 表单校验
       rules: {},
@@ -286,7 +286,7 @@ export default {
     /** 表单重置 */
     reset() {
       this.form = {
-        tableName: TABLE_NAME,
+        tableName: config.tableName,
       };
       this.resetForm('form')
     },
@@ -309,10 +309,10 @@ export default {
     /** 修改按钮操作 */
     async handleUpdate(row) {
       this.reset();
-      const {data} = await getRecord(this.$request, TABLE_NAME, row.id);
+      const {data} = await getRecord(this.$request, config.tableName, row.id);
       this.form = {
         ...data.data,
-        tableName: TABLE_NAME,
+        tableName: config.tableName,
       };
       this.open = true;
       this.title = 'Edit ' + this.config.tableAlias
@@ -344,7 +344,7 @@ export default {
         cancelButtonText: 'Cancel',
         type: 'warning'
       }).then(() => {
-        deleteRecord(this.$request, TABLE_NAME, row.id).then(() => {
+        deleteRecord(this.$request, config.tableName, row.id).then(() => {
           this.getList();
           this.$message({
             type: 'success',
@@ -363,11 +363,11 @@ export default {
       debugger;
       const params = isAll ? {} : this.queryParams;
       const confirmMessage = `Confirm whether to export ${isAll ? 'all' : 'current'} data items?`;
-      const downloadFilename = `${TABLE_NAME}${isAll ? '-all' : '-export'}.xlsx`;
+      const downloadFilename = `${config.tableName}${isAll ? '-all' : '-export'}.xlsx`;
 
       this.$modal.confirm(confirmMessage).then(() => {
         this.exportLoading = true;
-        return isAll ? exportTableExcel(this.$request, TABLE_NAME) : exportExcel(this.$request, params)
+        return isAll ? exportTableExcel(this.$request, config.tableName) : exportExcel(this.$request, params)
       }).then(response => {
         this.$download.excel(response.data, downloadFilename);
         this.exportLoading = false
