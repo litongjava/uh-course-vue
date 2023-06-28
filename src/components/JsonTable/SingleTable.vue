@@ -1,7 +1,7 @@
 <template>
 <div class="app-container">
   <!-- 搜索工作栏 -->
-  <el-form :model="queryParams" ref="queryForm" :inline="true" size="small" v-show="showSearch">
+  <el-form :model="queryParams" ref="queryForm" :inline="true" size="small" v-show="config.query.show">
     <el-form-item v-for="(item, index) in config.query.items" :key="index" :label="item.name"
                   :prop="item.key" v-show="item.show">
 
@@ -58,7 +58,7 @@
         >{{config.toolBar.exportAllButtonName}}
         </el-button>
       </el-col>
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList"/>
+      <right-toolbar :show-search.sync="config.query.show" @queryTable="getList"/>
 
       <el-dropdown>
           <span class="el-dropdown-link">
@@ -211,8 +211,6 @@ export default {
       loading: true,
       // 导出遮罩层
       exportLoading: false,
-      // 显示搜索条件
-      showSearch: true,
       // 总条数
       total: 0,
       // 列表

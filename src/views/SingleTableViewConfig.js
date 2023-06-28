@@ -2,6 +2,7 @@ export default {
   "tableName": "course",
   "tableAlias": "Course",
   "query": {
+    "show":true,
     "items": [
       {
         "name": "Id",

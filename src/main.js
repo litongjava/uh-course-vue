@@ -9,11 +9,13 @@ import RightToolbar from '@/components/RightToolbar'
 import Pagination from "@/components/Pagination";
 import JsonSingleTable from "@/components/JsonTable/SingleTable";
 import JsonSingleTableView from "@/components/JsonTable/SingleTableView";
+import JsonMultiTableView from "@/components/JsonTable/MultiTableView";
 
 Vue.component('RightToolbar', RightToolbar);
 Vue.component('Pagination', Pagination);
 Vue.component('json-single-table', JsonSingleTable);
 Vue.component('json-single-table-view', JsonSingleTableView);
+Vue.component('json-multi-table-view', JsonMultiTableView);
 
 import directive from './directive' // directive
 Vue.use(directive);
@@ -38,7 +40,7 @@ Vue.config.productionTip = false;
 new Vue({
   router,
   render: h => h(App),
-  mounted () {
+  mounted() {
     window.vue = this
   },
 }).$mount('#app');
