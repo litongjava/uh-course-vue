@@ -78,10 +78,10 @@ export function exportAlarmAiExcel(query) {
   })
 }
 
-export function tableConfig(request,query) {
+export function getTableConfig(request,query) {
   return request({
     url: '/table/json/table-config',
-    method: 'get',
-    params: query,
+    method: 'post',
+    data: query,
   })
 }

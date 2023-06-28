@@ -8,10 +8,12 @@ import './plugins/element.js'
 import RightToolbar from '@/components/RightToolbar'
 import Pagination from "@/components/Pagination";
 import JsonSingleTable from "@/components/JsonTable/SingleTable";
+import JsonSingleTableView from "@/components/JsonTable/SingleTableView";
 
 Vue.component('RightToolbar', RightToolbar);
 Vue.component('Pagination', Pagination);
 Vue.component('json-single-table', JsonSingleTable);
+Vue.component('json-single-table-view', JsonSingleTableView);
 
 import directive from './directive' // directive
 Vue.use(directive);

@@ -224,13 +224,13 @@ export default {
       open: false,
       // 查询参数
       queryParams: {
-        tableName: config.tableName,
+        tableName: this.config.tableName,
         pageNo: 1,
         pageSize: 10,
       },
       // 表单参数
       form: {
-        tableName: config.tableName,
+        tableName: this.config.tableName,
       },
       // 表单校验
       rules: {},
@@ -286,7 +286,7 @@ export default {
     /** 表单重置 */
     reset() {
       this.form = {
-        tableName: config.tableName,
+        tableName: this.config.tableName,
       };
       this.resetForm('form')
     },
@@ -309,10 +309,10 @@ export default {
     /** 修改按钮操作 */
     async handleUpdate(row) {
       this.reset();
-      const {data} = await getRecord(this.$request, config.tableName, row.id);
+      const {data} = await getRecord(this.$request, this.config.tableName, row.id);
       this.form = {
         ...data.data,
-        tableName: config.tableName,
+        tableName: this.config.tableName,
       };
       this.open = true;
       this.title = 'Edit ' + this.config.tableAlias
@@ -344,7 +344,7 @@ export default {
         cancelButtonText: 'Cancel',
         type: 'warning'
       }).then(() => {
-        deleteRecord(this.$request, config.tableName, row.id).then(() => {
+        deleteRecord(this.$request, this.config.tableName, row.id).then(() => {
           this.getList();
           this.$message({
             type: 'success',
@@ -363,11 +363,11 @@ export default {
       debugger;
       const params = isAll ? {} : this.queryParams;
       const confirmMessage = `Confirm whether to export ${isAll ? 'all' : 'current'} data items?`;
-      const downloadFilename = `${config.tableName}${isAll ? '-all' : '-export'}.xlsx`;
+      const downloadFilename = `${this.config.tableName}${isAll ? '-all' : '-export'}.xlsx`;
 
       this.$modal.confirm(confirmMessage).then(() => {
         this.exportLoading = true;
-        return isAll ? exportTableExcel(this.$request, config.tableName) : exportExcel(this.$request, params)
+        return isAll ? exportTableExcel(this.$request, this.config.tableName) : exportExcel(this.$request, params)
       }).then(response => {
         this.$download.excel(response.data, downloadFilename);
         this.exportLoading = false
