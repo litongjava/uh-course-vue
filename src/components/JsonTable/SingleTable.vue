@@ -114,15 +114,14 @@
       :align="item.align"
       :height="item.height"
       v-if="item.show"
+      @dblclick="showContentDialog(item)"
       show-overflow-tooltip
     >
-      <template v-if="item.type === 'date'" v-slot="scope">
-      <span>{{ parseTime(scope.row[item.key]) }}</span>
-      </template>
-      <template v-else v-slot="scope">
-      <div class="cell-content" @mouseover="showCopyIcon = true" @mouseleave="showCopyIcon = false">
-        <span>{{ scope.row[item.key] }}</span>
-        <el-tooltip v-if="showCopyIcon" content="Copy">
+      <template v-slot="scope">
+      <div class="cell-content">
+        <span v-if="item.type === 'date'">{{ parseTime(scope.row[item.key]) }}</span>
+        <span v-else>{{ scope.row[item.key] }}</span>
+        <el-tooltip content="Copy">
           <el-button class="copy-button" @click="copyToClipboard(scope.row[item.key])"
                      icon="el-icon-document-copy" circle></el-button>
         </el-tooltip>
@@ -162,6 +161,9 @@
     @pagination="getList"
   />
 
+  <el-dialog :visible="contentDialogVisible" @close="contentDialogVisible = false">
+    <span>{{ contentDialogContent }}</span>
+  </el-dialog>
   <!-- 对话框(添加 / 修改) -->
   <el-dialog v-dialogDrag :title="title" :visible.sync="open" width="500px" append-to-body>
     <el-form ref="form" :model="form" :rules="rules" label-width="150px">
@@ -213,8 +215,6 @@ export default {
   },
   data() {
     return {
-      //显示复制图标
-      showCopyIcon: false,
       // 设置为 true 以显示列，设置为 false 以隐藏列
       showIdColumn: false,
       // 遮罩层
@@ -225,7 +225,7 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // AI报警列表
+      // 列表
       list: [],
       // 弹出层标题
       title: '',
@@ -246,7 +246,10 @@ export default {
       //显示的列
       visibleColumns: [],
       //显示的搜索列
-      visibleSearchItems: []
+      visibleSearchItems: [],
+      //内容对话框
+      contentDialogVisible: undefined,
+      contentDialogContent: undefined,
     }
   },
   created() {
@@ -324,37 +327,32 @@ export default {
         this.title = 'Edit ' + this.config.tableAlias
       })
     },
-    /** 提交按钮 */
+    /** 验证并提交表单 */
     submitForm() {
-      console.log(this.form.tableName);
       this.$refs['form'].validate(valid => {
         if (!valid) {
           return
         }
         // 修改的提交
         if (this.form.id != null) {
-          updateRecord(this.$request, this.form).then(response => {
-            if (response.data.data) {
-              this.$modal.msgSuccess('Update Successfully');
-              this.open = false;
-              this.getList()
-            } else {
-              this.$modal.msgError('Update Failed');
-            }
-          });
-          return
+          this.handleSubmit(updateRecord(this.$request, this.form), 'Update')
+        } else {
+          // 添加的提交
+          this.handleSubmit(createRecord(this.$request, this.form), 'Add')
         }
-        // 添加的提交
-        createRecord(this.$request, this.form).then(response => {
-          if (response.data.data) {
-            this.$modal.msgSuccess('Add Successfully');
-            this.open = false;
-            this.getList()
-          } else {
-            this.$modal.msgError('Add Failed');
-          }
+      })
+    },
 
-        })
+    // 代码优化: 提交请求的方法抽象
+    handleSubmit(promise, action) {
+      promise.then(response => {
+        if (response.data.data) {
+          this.$modal.msgSuccess(`${action} Successfully`);
+          this.open = false;
+          this.getList()
+        } else {
+          this.$modal.msgError(`${action} Failed`)
+        }
       })
     },
     /** 删除按钮操作 */
@@ -369,45 +367,48 @@ export default {
         console.log(e)
       })
     },
-    /** 导出按钮操作 */
-    handleExport() {
-      // 处理查询参数
-      const params = {...this.queryParams};
-      params.pageNo = undefined;
-      params.pageSize = undefined;
-      this.$modal.confirm('Confirm whether to export data items?').then(() => {
+    // 代码优化: 导出数据的方法抽象
+    handleExport(isAll = false) {
+      debugger;
+      const params = isAll ? {} : this.queryParams;
+      const confirmMessage = `Confirm whether to export ${isAll ? 'all' : 'current'} data items?`;
+      const downloadFilename = `${TABLE_NAME}${isAll ? '-all' : '-export'}.xlsx`;
+
+      this.$modal.confirm(confirmMessage).then(() => {
         this.exportLoading = true;
-        return exportExcel(this.$request, params)
+        return isAll ? exportTableExcel(this.$request, TABLE_NAME) : exportExcel(this.$request, params)
       }).then(response => {
-        this.$download.excel(response.data, TABLE_NAME + '-export.xls');
+        this.$download.excel(response.data, downloadFilename);
         this.exportLoading = false
       }).catch((e) => {
         console.log(e)
       })
     },
-    /** 导出按钮操作 */
+
+    /** 导出部分数据操作 */
+    handlePartialExport() {
+      this.handleExport(false)
+    },
+
+    /** 导出所有数据操作 */
     handleExportAll() {
-      // 处理查询参数
-      this.$modal.confirm('Confirm whether to export all data items?').then(() => {
-        this.exportLoading = true;
-        return exportTableExcel(this.$request, TABLE_NAME)
-      }).then(response => {
-        this.$download.excel(response.data, TABLE_NAME + '-all.xlsx');
-        this.exportLoading = false
-      }).catch((e) => {
-        console.log(e)
-      })
+      this.handleExport(true)
     },
-    copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        // 复制成功
-        this.$modal.msgSuccess('Copy Successfully');
-      }).catch((e) => {
-        // 复制失败
-        this.$modal.msgError('Copy Failed:' + e);
-      });
-    }
-  }
+  },
+  copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+      // 复制成功
+      this.$modal.msgSuccess('Copy Successfully');
+    }).catch((e) => {
+      // 复制失败
+      this.$modal.msgError('Copy Failed:' + e);
+    });
+  },
+  showContentDialog(item) {
+    this.contentDialogVisible = true;
+    this.contentDialogContent = this.list[item.key];
+  },
+
 }
 </script>
 <style scoped>
@@ -420,22 +421,14 @@ export default {
 
   .el-table .cell .copy-button {
     position: absolute;
-    visibility: hidden; /* Initially hide the button */
+    visibility: hidden;
+    top: 50%;
+    right: -30%; /* Change this line */
+    transform: translateY(-50%);
   }
 
   .el-table .cell:hover .copy-button {
-    visibility: visible; /* Show the button when the cell is hovered */
-  }
-
-  .el-tooltip {
-    z-index: 2000; /* 根据你的实际情况调整这个值 */
-  }
-
-  .copy-button {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 2000;
+    visibility: visible;
   }
 </style>
+
