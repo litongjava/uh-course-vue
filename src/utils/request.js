@@ -1,5 +1,7 @@
 import axios from "axios"
-import qs from "qs"
+import config from "../config";
+
+let baseURL = config[process.env.NODE_ENV].baseURL;
 
 /**
  * 处理错误信息
@@ -33,13 +35,14 @@ const errorHandle = (status, info) => {
   }
 };
 
+
 /**
  * 创建Axios对象
  */
 
 const instance = axios.create({
   // 公共配置
-  baseURL:"http://192.168.3.14:10510",
+  baseURL: baseURL,
   timeout: 5000,
   // withCredentials: true
 });
@@ -50,10 +53,6 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   config => {
-    if (config.method === 'post') {
-      // token:登陆信息凭证
-      config.data = qs.stringify(config.data)
-    }
     return config
   },
   error => Promise.reject(error)
@@ -74,5 +73,4 @@ instance.interceptors.response.use(
 );
 
 // get和post等请求方案
-
 export default instance
