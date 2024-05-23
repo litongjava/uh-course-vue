@@ -343,7 +343,6 @@ export default {
         "key": "title",
         "type": "varchar",
         "align": "center",
-        "sortable": true,
         "resizable": true,
         "width": "250",
         "show": true

@@ -4,7 +4,7 @@
   <json-query-form :config="config" :queryParams.sync="queryParams" @queryTable="page"/>
   <!-- 操作工具栏 -->
   <div v-show="config.toolBar.show">
-    <el-row :gutter="10" class="mb8" style="display: flex">
+    <el-row :gutter="10" class="mb8 right-aligned-row" style="display: flex">
       <left-toolbar :config="config" :queryParams="queryParams" @queryTable="page"/>
       <right-toolbar :show-search.sync="config.query.show" :config="config" @queryTable="page"/>
     </el-row>
@@ -135,5 +135,7 @@ export default {
 </script>
 
 <style scoped>
-
+.right-aligned-row {
+  justify-content: flex-end;
+}
 </style>
