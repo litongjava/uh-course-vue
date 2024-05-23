@@ -15,12 +15,12 @@
     <template v-slot:extra-columns>
     <el-table-column label="Detail" class-name="small-padding fixed-width">
       <template v-slot="scope">
-      <a :href="getDetail(scope.row['details_url'])">Details</a>
+      <a  target="_blank" :href="getDetail(scope.row['details_url'])">Details</a>
       </template>
     </el-table-column>
     <el-table-column label="Source" class-name="small-padding fixed-width">
       <template v-slot="scope">
-      <a :href="(scope.row['sources_url'])">Sources</a>
+      <a target="_blank" :href="(scope.row['sources_url'])">Sources</a>
       </template>
     </el-table-column>
     </template>
