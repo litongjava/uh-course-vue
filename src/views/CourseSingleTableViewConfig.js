@@ -1,7 +1,7 @@
 export default {
   "f": "course",
-  "idName":"id",
-  "idType":"long",
+  "idName": "id",
+  "idType": "long",
   "tableAlias": "Course",
   "pageUri": "/table/json/course/page",
   "getUri": "/table/json/course/get",
@@ -294,7 +294,7 @@ export default {
         "key": "term",
         "type": "varchar",
         "align": "center",
-        "show": false
+        "show": true
       },
       {
         "name": "Subject Abbr",
@@ -343,6 +343,9 @@ export default {
         "key": "title",
         "type": "varchar",
         "align": "center",
+        "sortable": true,
+        "resizable": true,
+        "width": "250",
         "show": true
       },
       {
@@ -399,6 +402,7 @@ export default {
         "key": "time",
         "type": "varchar",
         "align": "center",
+        "width": "130",
         "show": true
       },
       {
@@ -406,6 +410,7 @@ export default {
         "key": "room",
         "type": "varchar",
         "align": "center",
+        "width": "130",
         "show": true
       },
       {
@@ -413,6 +418,7 @@ export default {
         "key": "dates",
         "type": "varchar",
         "align": "center",
+        "width": "110",
         "show": true
       },
       {
