@@ -36,21 +36,21 @@ export default {
       },
       {
         "name": "Subject Abbr",
-        "key": "subjectAbbr",
+        "key": "subject_abbr",
         "type": "varchar",
         "show": true,
         "placeholder": "Please Input Subject Abbr"
       },
       {
         "name": "Subject Name",
-        "key": "subjectName",
+        "key": "subject_name",
         "type": "varchar",
         "show": false,
         "placeholder": "Please Input Subject Name"
       },
       {
         "name": "Focus On",
-        "key": "focusOn",
+        "key": "focus_on",
         "type": "varchar",
         "show": false,
         "placeholder": "Please Input Focus On"
@@ -155,14 +155,14 @@ export default {
       },
       {
         "name": "Details Url",
-        "key": "detailsUrl",
+        "key": "details_url",
         "type": "varchar",
         "show": false,
         "placeholder": "Please Input Details Url"
       },
       {
         "name": "Sources Url",
-        "key": "sourcesUrl",
+        "key": "sources_url",
         "type": "varchar",
         "show": false,
         "placeholder": "Please Input Sources Url"
@@ -176,7 +176,7 @@ export default {
       },
       {
         "name": "Create Time",
-        "key": "createTime",
+        "key": "create_time",
         "type": "date",
         "show": false,
         "prop": {
@@ -200,7 +200,7 @@ export default {
       },
       {
         "name": "Update Time",
-        "key": "updateTime",
+        "key": "update_time",
         "type": "date",
         "show": false,
         "prop": {
@@ -224,7 +224,7 @@ export default {
       },
       {
         "name": "Tenant Id",
-        "key": "tenantId",
+        "key": "tenant_id",
         "type": "varchar",
         "show": false,
         "placeholder": "Please Input Tenant Id"
@@ -298,21 +298,21 @@ export default {
       },
       {
         "name": "Subject Abbr",
-        "key": "subjectAbbr",
+        "key": "subject_abbr",
         "type": "varchar",
         "align": "center",
         "show": true
       },
       {
         "name": "Subject Name",
-        "key": "subjectName",
+        "key": "subject_name",
         "type": "varchar",
         "align": "center",
         "show": false
       },
       {
         "name": "Focus On",
-        "key": "focusOn",
+        "key": "focus_on",
         "type": "varchar",
         "align": "center",
         "show": true
@@ -361,28 +361,28 @@ export default {
       },
       {
         "name": "Curr Enrolled",
-        "key": "currEnrolled",
+        "key": "curr_enrolled",
         "type": "varchar",
         "align": "center",
         "show": false
       },
       {
         "name": "Seats Avail",
-        "key": "seatsAvail",
+        "key": "seats_avail",
         "type": "varchar",
         "align": "center",
         "show": false
       },
       {
         "name": "Curr Waitlisted",
-        "key": "currWaitlisted",
+        "key": "curr_waitlisted",
         "type": "varchar",
         "align": "center",
         "show": false
       },
       {
         "name": "Wait Avail",
-        "key": "waitAvail",
+        "key": "wait_avail",
         "type": "varchar",
         "align": "center",
         "show": false
@@ -424,14 +424,14 @@ export default {
       },
       {
         "name": "Details Url",
-        "key": "detailsUrl",
+        "key": "details_url",
         "type": "varchar",
         "align": "center",
         "show": false
       },
       {
         "name": "Sources Url",
-        "key": "sourcesUrl",
+        "key": "sources_url",
         "type": "varchar",
         "align": "center",
         "show": false
@@ -445,7 +445,7 @@ export default {
       },
       {
         "name": "Create Time",
-        "key": "createTime",
+        "key": "create_time",
         "type": "date",
         "align": "center",
         "show": false
@@ -459,7 +459,7 @@ export default {
       },
       {
         "name": "Update Time",
-        "key": "updateTime",
+        "key": "update_time",
         "type": "date",
         "align": "center",
         "show": false
@@ -473,7 +473,7 @@ export default {
       },
       {
         "name": "Tenant Id",
-        "key": "tenantId",
+        "key": "tenant_id",
         "type": "varchar",
         "align": "center",
         "show": false
@@ -641,7 +641,7 @@ export default {
       },
       {
         "name": "Sources Url",
-        "key": "sourcesUrl",
+        "key": "sources_Url",
         "type": "varchar",
         "show": true,
         "placeholder": "Please Input Sources Url"

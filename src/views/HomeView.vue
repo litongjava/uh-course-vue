@@ -12,7 +12,7 @@
     <p><b>By institution<sup>*</sup>:</b></p>
     <ul class="institutions">
       <li v-for="(item,index) in insitutions" :key="index">
-        <a :href="'#/semester?i='+item.abbrName+'&id='+item.id">{{item.name}}</a>
+        <a :href="'#/semester?i='+item.abbr_name+'&id='+item.id">{{item.name}}</a>
       </li>
       <li class="SYS">
         <a href="https://www.uhonline.hawaii.edu/courses/">System-wide Distance Learning</a>

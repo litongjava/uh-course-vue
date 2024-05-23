@@ -15,12 +15,12 @@
     <template v-slot:extra-columns>
     <el-table-column label="Detail" class-name="small-padding fixed-width">
       <template v-slot="scope">
-      <a :href="getDetail(scope.row['detailsUrl'])">Details</a>
+      <a :href="getDetail(scope.row['details_url'])">Details</a>
       </template>
     </el-table-column>
     <el-table-column label="Source" class-name="small-padding fixed-width">
       <template v-slot="scope">
-      <a :href="(scope.row['sourcesUrl'])">Sources</a>
+      <a :href="(scope.row['sources_url'])">Sources</a>
       </template>
     </el-table-column>
     </template>
@@ -74,36 +74,44 @@ export default {
     page() {
       this.loading = true;
       // 执行查询
-      pageRecord(this.config.pageUri, this.$request, this.queryParams).then(response => {
-        this.total = response.data.data.total;
-        let list = response.data.data.list;
-        // 使用 Promise.all 并行获取每个课程的备注信息
+      try{
+        pageRecord(this.config.pageUri, this.$request, this.queryParams).then(response => {
+          if (response && response.data) {
+            this.total = response.data.data.total;
+            let list = response.data.data.list;
+            // 使用 Promise.all 并行获取每个课程的备注信息
 
-        const remarkPromises = list.map(item => api.getRemarkByCourseId(item.id));
+            const remarkPromises = list.map(item => api.getRemarkByCourseId(item.id));
 
-        Promise.all(remarkPromises)
-          .then(remarks => {
-            // 将获取到的备注信息与课程列表数据合并
-            list = list.map((item, index) => {
-              let response = remarks[index];
-              if (response.data.data) {
-                let remark = response.data.data.remark;
-                if (remark) {
-                  item.remark = remark;
-                } else {
-                  item.remark = "";
-                }
-              }
-              return item;
-            });
-            this.list = list;
-            this.loading = false;
-          })
-          .catch(error => {
-            console.error("Error:", error);
-            this.loading = false;
-          });
-      })
+            Promise.all(remarkPromises)
+                .then(remarks => {
+                  // 将获取到的备注信息与课程列表数据合并
+                  list = list.map((item, index) => {
+                    let response = remarks[index];
+                    if (response.data.data) {
+                      let remark = response.data.data.remark;
+                      if (remark) {
+                        item.remark = remark;
+                      } else {
+                        item.remark = "";
+                      }
+                    }
+                    return item;
+                  });
+                  this.list = list;
+                  this.loading = false;
+                })
+                .catch(error => {
+                  console.error("Error:", error);
+                  this.loading = false;
+                });
+          } else {
+            console.error('Response data is undefined');
+          }
+        })
+      }catch (err){
+        console.error('Error fetching classes:', error);
+      }
     },
     getDetail(part) {
       // console.log(part)
