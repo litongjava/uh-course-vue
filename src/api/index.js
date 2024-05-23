@@ -11,7 +11,7 @@ const api = {
     return request(options);
   },
   getSemestersByInstitution(id) {
-    let data = {columns: 'name', institutionId: id, institutionIdType: "long"};
+    let data = {columns: 'name', institutionId: id, institutionIdType: "long", orderBy: 't', isAsc: 'false'};
     let options = {
       method: 'POST',
       url: '/table/json/semester/list',

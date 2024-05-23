@@ -3,10 +3,10 @@ const config = {
     baseURL: "http://127.0.0.1:10510"
   },
   beta: {
-    baseURL: "http://39.106.133.253:18063"
+    baseURL: "http://192.168.3.9:10510"
   },
   production: {
-    baseURL: "https://uh-course-162308e1102d.herokuapp.com/"
+    baseURL: "https://uh-courses.fly.dev/"
   }
 };
 
